@@ -88,5 +88,10 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# datas
+# ignore folders
 data/
+contents/
+
+# ignore files
+gather_proxy.txt
+saveContent.txt

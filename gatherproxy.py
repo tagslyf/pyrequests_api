@@ -10,26 +10,27 @@ lock = threading.Lock()
 
 
 def request_api(name, url, headers, proxys, proxymesh_ip, limit_errors=False):
-	desc = "{}\n\n\n{}\n\n{}"
-	img = random.choice(image_urls)
-	random.shuffle(promos)
-	promo = random.choice(promos)
-	random.shuffle(contents)
-	content = "	{}\n\n".format(", ".join(contents[:random.randint(5,10)]))
-	for n in range(random.randint(2,3)):
-		random.shuffle(contents)
-		content += "	{}\n".format(", ".join(contents[:random.randint(5,10)]))
+	desc = "{}\n\n\n{}"
+	title = '大奖娱乐【邮件限时专享优惠】'
+	top = "大奖娱乐【邮件限时专享优惠】：首存100送108共获208，15倍流水即可！ 更多小额福利：存20可获得48！存50可获得108！新春好礼送不停，详情请见 http://www.djlaohuji.com"
 	headers['X-ProxyMesh-IP'] = proxymesh_ip
 
 	errors = {}
 	for i in range(req_limit):
 		try:
-			title = titles[random.randint(0, len(titles) - 1)]
-			desc_link = "\n".join(["{} ---- {}".format(l, titles[random.randint(0, len(titles) - 1)]) for l in links[-3:]])
+			img = random.choice(image_urls)
+			while True:
+				news = os.listdir("contents/")
+				random.shuffle(news)
+				news = random.choice(news)
+				with open("contents/{}".format(news), "r") as f:
+					news = f.read()
+				if news.strip() != "None":
+					break
 			data = {
 				'image': img,
 				'title': title,
-				'description': desc.format(promo, content, desc_link).replace('.', '&#46;')
+				'description': desc.format(top, news).replace('.', '&#46;')
 			}
 			response = requests.post(url, headers=headers, data=data, proxies=proxys, timeout=5)
 			if response.status_code == 200:
@@ -111,20 +112,11 @@ def check_gatherproxy():
 
 
 def gatherproxy_api():
-	global contents, domain, image_urls, promos, req_limit, start, titles
+	global domain, image_urls, req_limit, start
 	pid = str(uuid.uuid4()).upper().replace("-", "")[:16]
 	domain = "http://imgur.com/"
 	write_upload_log("Start", pid, "Start API request using gather proxies.")
-	titles = []
-	with open("titles.txt", "r") as f:
-		titles = [key.rstrip() for key in f.readlines()]
-	promos = []
-	with open("promos.txt", "r") as f:
-		promos = [key.rstrip() for key in f.readlines()]
-	contents = []
-	with open("contents.txt", "r") as f:
-		contents = [key.rstrip() for key in f.readlines()]
-	image_urls = ['http://i.imgur.com/4BoBLeK.jpg', 'https://i.imgbox.com/5eveR18P.jpg', 'http://i64.tinypic.com/n5mudx.jpg', 'http://thumbsnap.com/i/WOv9HaHv.jpg?0116']
+	image_urls = ["http://i.imgur.com/nRTNo6y.png", "http://oi64.tinypic.com/jtvuxf.jpg", "http://thumbsnap.com/i/e5bvtDl8.png?0118"]
 	checked_proxies = check_gatherproxy()
 	proxy_counter = 0
 	proxyloop = False
@@ -135,7 +127,7 @@ def gatherproxy_api():
 	url = "https://api.imgur.com/3/image"
 	headers = {}
 	headers['Authorization'] = "Client-ID e8e0297762a5593"
-	write_upload_log(checked_proxies, 'API', 'Gathered proxies current IP address.')
+	write_upload_log(checked_proxies, 'API', '{} Gathered proxies current IP address.'.format(len(checked_proxies)))
 	while True:
 		threads = []
 		for i in range(threads_num):
