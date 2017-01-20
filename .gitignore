@@ -94,4 +94,4 @@ contents/
 
 # ignore files
 gather_proxy.txt
-saveContent.txt
+saveContent*.txt
