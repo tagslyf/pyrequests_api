@@ -11,14 +11,18 @@ lock = threading.Lock()
 
 def request_api(name, url, headers, proxys, proxymesh_ip, limit_errors=False):
 	desc = "{}\n\n\n{}"
-	title = '大奖娱乐【邮件限时专享优惠】'
-	top = "大奖娱乐【邮件限时专享优惠】：首存100送108共获208，15倍流水即可！ 更多小额福利：存20可获得48！存50可获得108！新春好礼送不停，详情请见 http://www.djlaohuji.com"
+	title = ""
+	content_header = ""
 	headers['X-ProxyMesh-IP'] = proxymesh_ip
 
 	errors = {}
 	for i in range(req_limit):
 		try:
+			random.shuffle(titles)
+			title = random.choice(titles)
 			img = random.choice(image_urls)
+			random.shuffle(content_headers)
+			content_header = random.choice(content_headers)
 			while True:
 				news = os.listdir("contents/")
 				random.shuffle(news)
@@ -29,8 +33,8 @@ def request_api(name, url, headers, proxys, proxymesh_ip, limit_errors=False):
 					break
 			data = {
 				'image': img,
-				'title': title,
-				'description': desc.format(top, news).replace('.', '&#46;')
+				'title': title.replace('.', '&#46;'),
+				'description': desc.format(content_header, news).replace('.', '&#46;')
 			}
 			response = requests.post(url, headers=headers, data=data, proxies=proxys, timeout=5)
 			if response.status_code == 200:
@@ -129,11 +133,22 @@ def get_proxies():
 
 
 def checkedproxy_api():
-	global domain, image_urls, req_limit, start
+	global content_headers, domain, image_urls, req_limit, start, titles
 	pid = str(uuid.uuid4()).upper().replace("-", "")[:16]
 	domain = "http://imgur.com/"
 	write_upload_log("Start", pid, "Start API request using scraped proxies.")
-	image_urls = ["http://i.imgur.com/nRTNo6y.png", "http://oi64.tinypic.com/jtvuxf.jpg", "http://thumbsnap.com/i/e5bvtDl8.png?0118"]
+	content_headers = []
+	with open("content_headers.txt", "r") as f:
+		for ch in f.readlines():
+			content_headers.append(ch.rstrip())
+	image_urls = []
+	with open("banner_urls.txt", "r") as f:
+		for url in f.readlines():
+			image_urls.append(url.rstrip())
+	titles = []
+	with open("titles.txt", "r") as f:
+		for title in f.readlines():
+			titles.append(title.rstrip())
 	checked_proxies = get_proxies()
 	proxy_counter = 0
 	req_limit = 100
