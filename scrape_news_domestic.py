@@ -27,11 +27,6 @@ def scrape_news_domestic():
 					os.remove("contents/{}.txt".format(filename))
 
 
-def write_upload_log(ip, username, message):
-	with open("data/proxymesh_uploadlog_{}.txt".format(datetime.now().strftime("%Y%m%d")), "a") as f:
-		f.write("{}	{}	{}	{}\n".format(datetime.now(), ip, username, message))
-
-
 if __name__ == "__main__":
 	print("Scraping of news.163.com/domestic is running...")
 	while True:
