@@ -40,7 +40,8 @@ def request_api(name, url, headers, proxys, proxymesh_ip, limit_errors=False):
 				response_data = response.json()['data']
 				link = "{}{}".format(domain, response_data['id'])
 				links.append(link)
-				with open("saveContent.txt", "a", encoding="utf-8") as f:
+				# with open("saveContent.txt", "a", encoding="utf-8") as f:
+				with open("saveContent.txt", "a") as f:
 					f.write("{}\n".format(link))
 				print("{}".format(link))
 				write_upload_log(proxymesh_ip, 'API:{}'.format(name), link)
