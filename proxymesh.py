@@ -2,7 +2,6 @@ import json, os, random, requests, sys, threading, time, uuid
 from base64 import b64encode
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
-from lxml import etree
 from os import listdir
 from os.path import isfile
 
