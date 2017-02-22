@@ -48,7 +48,11 @@ def request_api(name, url, headers, proxys, proxymesh_ip, limit_errors=False):
 				write_upload_log(proxymesh_ip, 'API', "{} {}".format(response, response.json()['data']['error']))
 				break
 			else:
+				# Error response: <Response [429]> Daily client requests exceeded
 				write_upload_log(proxymesh_ip, 'API', "Error response: {} {}".format(response, response.json()['data']['error']) if response.json() else response.text)
+				if response.status_code == 429 and response.json()['data']['error'].strip() == "Daily client requests exceeded":
+					write_upload_log(proxymesh_ip, 'API', "Sleeping for 60mins.")
+					time.sleep(3600)
 		except Exception as ex:
 			type, value, traceback = sys.exc_info()
 			if limit_errors:
